@@ -41,9 +41,11 @@ production-ready.
 
 ## 🖼 Screenshots
 
-Screenshots are generated in the repository under `screenshots/` (added in the
-v1.0.0 release). They show the hero countdown, the five timings, the monthly
-timetable, and the Qibla compass on a phone-sized viewport.
+![Waqt home screen](https://static.teamily.ai/sites/40accbdc-8d4f-4083-9a9b-a2e25a5fa9e7/documents/home/home.png)
+
+*Waqt on a phone-sized viewport — next-prayer countdown, the five timings for
+Karachi, and the gold/dark brand theme. More screenshots land in the repo as
+the app grows.*
 
 ## 🌐 Live demo
 
