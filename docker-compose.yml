@@ -1,0 +1,34 @@
+services:
+  api:
+    build: .
+    container_name: waqt-api
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-dev-only-secret-key-change-me-please-32chars}
+      - DATABASE_URL=postgresql+psycopg://waqt:waqt@db:5432/waqt
+      - CORS_ORIGINS=http://localhost:8000
+      - ENVIRONMENT=production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: waqt-db
+    environment:
+      - POSTGRES_USER=waqt
+      - POSTGRES_PASSWORD=waqt
+      - POSTGRES_DB=waqt
+    volumes:
+      - waqt_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U waqt -d waqt"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  waqt_pgdata:
