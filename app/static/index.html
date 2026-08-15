@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Waqt — Prayer Times &amp; Qibla</title>
+  <meta name="description" content="Accurate prayer times and Qibla direction — computed from first-principles astronomy. No external libraries, no tracking." />
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">🕌</span>
+      <span class="brand-name">Waqt <span class="brand-sub">وقت</span></span>
+    </div>
+    <nav class="nav-links">
+      <a href="#today" class="nav-link active">Today</a>
+      <a href="#month" class="nav-link">Month</a>
+      <a href="#qibla" class="nav-link">Qibla</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Location bar -->
+    <section class="location-bar">
+      <div class="location-picker">
+        <input id="city-search" type="search" placeholder="Search city… (e.g. Karachi)" autocomplete="off" />
+        <ul id="city-results" class="city-results hidden"></ul>
+      </div>
+      <div class="location-display" id="location-display">📍 Karachi, Pakistan</div>
+      <button id="btn-save" class="btn btn-ghost" title="Save this location">♡ Save</button>
+    </section>
+
+    <!-- Today's times -->
+    <section id="today" class="card hero-card">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <div class="date-line" id="date-line">—</div>
+          <div class="next-prayer-label">Next prayer</div>
+          <div class="next-prayer-name" id="next-prayer-name">—</div>
+          <div class="next-prayer-time" id="next-prayer-time">--:--</div>
+          <div class="countdown" id="countdown">in --:--:--</div>
+        </div>
+        <div class="hero-badge">
+          <div class="badge-city" id="badge-city">—</div>
+          <div class="badge-method" id="badge-method">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All five times -->
+    <section class="card times-card">
+      <h2 class="card-title">Today's Timings</h2>
+      <div class="times-grid" id="times-grid">
+        <div class="time-row"><span class="t-name">Fajr</span><span class="t-time">--:--</span></div>
+        <div class="time-row"><span class="t-name">Sunrise</span><span class="t-time">--:--</span></div>
+        <div class="time-row"><span class="t-name">Dhuhr</span><span class="t-time">--:--</span></div>
+        <div class="time-row"><span class="t-name">Asr</span><span class="t-time">--:--</span></div>
+        <div class="time-row"><span class="t-name">Maghrib</span><span class="t-time">--:--</span></div>
+        <div class="time-row"><span class="t-name">Isha</span><span class="t-time">--:--</span></div>
+      </div>
+      <div class="method-row">
+        <label for="method-select">Method</label>
+        <select id="method-select"></select>
+      </div>
+      <div class="method-row">
+        <label for="asr-select">Asr</label>
+        <select id="asr-select">
+          <option value="0">Auto (method)</option>
+          <option value="1">Shafi / Standard</option>
+          <option value="2">Hanafi</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Monthly timetable -->
+    <section id="month" class="card">
+      <h2 class="card-title">Monthly Timetable</h2>
+      <div class="month-nav">
+        <button id="prev-month" class="btn btn-ghost">◀</button>
+        <span id="month-label">—</span>
+        <button id="next-month" class="btn btn-ghost">▶</button>
+      </div>
+      <div class="table-wrap">
+        <table class="timetable">
+          <thead>
+            <tr><th>Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr>
+          </thead>
+          <tbody id="month-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Qibla -->
+    <section id="qibla" class="card qibla-card">
+      <h2 class="card-title">Qibla Direction</h2>
+      <canvas id="qibla-canvas" width="300" height="300"></canvas>
+      <div class="qibla-readout">
+        <span id="qibla-bearing">--°</span>
+        <span id="qibla-cardinal">—</span>
+      </div>
+      <p class="hint">Align the red needle with your compass north — the gold needle points to the Kaaba.</p>
+    </section>
+
+    <!-- Auth / saved locations -->
+    <section id="saved" class="card">
+      <h2 class="card-title">Saved Locations</h2>
+      <div id="auth-box" class="auth-box">
+        <p class="hint">Sign in to save locations and get back to them in one tap.</p>
+        <form id="auth-form" class="auth-form">
+          <input id="auth-name" type="text" placeholder="Name (register only)" autocomplete="name" />
+          <input id="auth-email" type="email" placeholder="Email" required autocomplete="email" />
+          <input id="auth-password" type="password" placeholder="Password (8+ chars)" required minlength="8" autocomplete="current-password" />
+          <div class="auth-actions">
+            <button type="submit" class="btn btn-primary" id="auth-submit">Login</button>
+            <button type="button" class="btn btn-ghost" id="auth-toggle">or Register</button>
+          </div>
+          <p class="auth-msg" id="auth-msg"></p>
+        </form>
+      </div>
+      <div id="saved-list" class="saved-list hidden"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Waqt ⏱ — prayer times computed from first-principles astronomy. No ads, no tracking.</p>
+    <p class="hint">Accuracy is typically within ±1 minute. Always confirm with your local mosque for official timings.</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
